@@ -1,0 +1,10 @@
+import React from 'react';
+import * as firebase from '../firebase';
+
+export default class AddPlace extends React.Component {
+  render () {
+    return (
+      <button onClick={firebase.authorizeUser()}></button>
+    );
+  }
+}
