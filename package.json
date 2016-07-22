@@ -23,7 +23,7 @@
     "babel-polyfill": "^6.9.1",
     "bootstrap": "^3.3.6",
     "firebase": "^3.2.0",
-    "react-bootstrap": "^0.29.5",
+    "react-bootstrap": "^0.30.0-rc.1",
     "react-infinite": "^0.9.2",
     "react-infinity": "^1.2.2"
   },

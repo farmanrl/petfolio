@@ -11,33 +11,29 @@ export function authorizeUser() {
 
 //Database
 
-export function addPetPlace(name, location) {
-  var newPlaceKey = firebase.database().ref().child('petPlaces').push().key;
-  firebase.database().ref('petPlaces/' + newPlaceKey).set({
+export function addPetPlace(name, location, image) {
+  var uid = firebase.auth().currentUser.uid;
+  firebase.database().ref('petPlaces/' + uid).set({
     name: name,
     location: location,
+    image: image,
   });
 }
 
-export function addPetProfile(uid, petPlace, name, location) {
-  var petData = {
-    petPlace: petPlace,
-    uid: uid,
+export function addPetProfile(name, location, image) {
+  var uid = firebase.auth().currentUser.uid;
+  var newPetKey = firebase.database().ref().child('petPlaces/' + uid + '/').push().key;
+  firebase.database().ref('petPlaces/' + uid + '/' + newPetKey).set({
     name: name,
-    location: location
-  };
-
-  var newPetKey = firebase.database().ref().child('petList').push().key;
-
-  var updates = {};
-  updates['/petList/' + newPetKey] = petData;
-  updates['/petPlaces/pets/' + uid + '/' + newPetKey] = petData;
-
-  return firebase.database().ref().update(updates);
+    location: location,
+    image: image,
+  });
+  firebase.database().ref('petList/' + newPetKey).set({
+    name: name,
+    location: location,
+    image: image,
+    uid: uid,
+  });
 }
 
 //Storage
-
-export function uploadPhoto(image) {
-  var storageRef = firebase.storage().ref();
-}

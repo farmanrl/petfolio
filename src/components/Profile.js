@@ -24,7 +24,6 @@ export default class Profile extends React.Component {
         </PageHeader>
         <MediaPanel />
         <MediaPanel />
-        <AddPlaceForm />
       </div>
     );
   }

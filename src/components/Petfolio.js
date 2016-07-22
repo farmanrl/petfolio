@@ -1,17 +1,21 @@
 import React from 'react';
-import Navigation from '../components/Navigation';
-import Profile from '../components/Profile';
-import AddPet from '../components/AddPet';
-import AddPlaceForm from '../components/AddPlaceForm';
-import Login from '../components/Login';
-import Tab from '../components/Tab';
+import {Jumbotron} from 'react-bootstrap';
+import Navigation from './Navigation';
+import Profile from './Profile';
+import AddPetForm from './AddPetForm';
+import AddPlaceForm from './AddPlaceForm';
+import Login from './Login';
+
+import Tab from './Tab';
+
 export default class Petfolio extends React.Component {
   render() {
     return (
       <div>
+        <img style={{height: 200, paddingLeft: 100}} src="http://i.imgur.com/HcCeSUu.png"/>
+        <h1 style={{paddingLeft: 100}}> The Adaptive Adoption Network </h1>
         <Navigation />
         <Tab />
-        <Login />
       </div>
     );
   }
