@@ -6,6 +6,8 @@ import {NavDropdown} from 'react-bootstrap';
 import {MenuItem} from 'react-bootstrap';
 import AddPetForm from './AddPetForm';
 import AddPlaceForm from './AddPlaceForm';
+import Login from './Login';
+import firebase from 'firebase';
 
 export default class Navigation extends React.Component {
   render() {
@@ -16,15 +18,21 @@ export default class Navigation extends React.Component {
             <Navbar.Brand>
               <a href="#">Petfolio</a>
             </Navbar.Brand>
+            <Login/>
             <Navbar.Toggle />
           </Navbar.Header>
           <Navbar.Collapse>
             <Nav>
               <NavItem eventKey={1} href="#">Pet Finder</NavItem>
               <NavItem eventKey={2} href="#">Place Finder</NavItem>
-              <NavDropdown eventKey={3} title="Dropdown" id="basic-nav-dropdown">
+              <NavDropdown eventKey={3} title="Create a Place" id="basic-nav-dropdown">
                 <div style={{width: 400}}>
                   <AddPlaceForm />
+                </div>
+              </NavDropdown>
+              <NavDropdown eventKey={4} title="Add a Pet" id="basic-nav-dropdown">
+                <div style={{width: 400}}>
+                  <AddPetForm />
                 </div>
               </NavDropdown>
             </Nav>

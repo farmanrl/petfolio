@@ -12,8 +12,10 @@ export default class Petfolio extends React.Component {
   render() {
     return (
       <div>
-        <img style={{height: 200, paddingLeft: 100}} src="http://i.imgur.com/HcCeSUu.png"/>
-        <h1 style={{paddingLeft: 100}}> The Adaptive Adoption Network </h1>
+        <div style={{display: "flex", alignItems: "center"}}>
+          <img style={{height: 200, paddingLeft: 100}} src="http://i.imgur.com/HcCeSUu.png"/>
+          <h1 style={{paddingLeft: 50, fontSize: "4em"}}>The Adaptive Adoption Network</h1>
+        </div>
         <Navigation />
         <Tab />
       </div>

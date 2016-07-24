@@ -32,7 +32,7 @@ export function addPetProfile(name, location, image) {
     name: name,
     location: location,
     image: image,
-    uid: uid,
+    place: uid,
   });
 }
 

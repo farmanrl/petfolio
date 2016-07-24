@@ -1,6 +1,6 @@
 import React from 'react';
 import * as firebase from '../firebase';
-import {FormGroup, ControlLabel, FormControl} from 'react-bootstrap';
+import {Button, FormGroup, ControlLabel, FormControl} from 'react-bootstrap';
 
 export default class AddPlaceForm extends React.Component {
   constructor(props) {
@@ -45,7 +45,7 @@ export default class AddPlaceForm extends React.Component {
             />
           </FormGroup>
         </form>
-        <button onClick={() => firebase.addPetPlace(this.state.nameValue, this.state.locationValue, this.state.imageValue)}>Add Pet Place</button>
+        <Button onClick={() => firebase.addPetPlace(this.state.nameValue, this.state.locationValue, this.state.imageValue)}>Add Pet Place</Button>
       </div>
     );
   }

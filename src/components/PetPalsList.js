@@ -13,9 +13,11 @@ export default class PetPalsList extends React.Component {
   }
   render() {
     if (this.state !== null) {
+      console.log(this.state);
       return (
         <div>
-          <h1>PETS</h1>
+          <h1 style={{paddingLeft: "5%"}}>Pet Pals</h1>
+          <h4 style={{paddingLeft: "5%"}}>Connect with pets in need that meet your needs</h4>
           {Object.keys(this.state.petList).map((pet, index) => (
              <PetPal key={index}
                      name={this.state.petList[pet].name}
