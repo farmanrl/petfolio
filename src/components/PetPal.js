@@ -10,10 +10,11 @@ export default class PetPal extends React.Component {
               <img height="100%" src={this.props.image} />
             </div>
             <div style={{display: "flex", alignItems: "center"}}>
-              <div style={{display: "flex", flexDirection: "column", paddingLeft: "2.5%", width: 400}}>
+              <div style={{display: "flex", flexDirection: "column", paddingLeft: "2.5%", width: 600}}>
                 <p>{this.props.name}</p>
                 <small>Available for Adoption!</small>
                 <small style={{paddingTop: 10}}>Located in {this.props.location}</small>
+                <small style={{paddingTop: 10}}>Hosted by {this.props.place}</small>
               </div>
               <div style={{marginLeft: 100}}>
                 <Button bsStyle="primary" bsSize="large">Follow</Button>
@@ -34,4 +35,5 @@ PetPal.propTypes = {
   name: React.PropTypes.string,
   location: React.PropTypes.string,
   image: React.PropTypes.string,
+  place: React.PropTypes.string,
 };

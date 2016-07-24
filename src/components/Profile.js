@@ -14,7 +14,7 @@ export default class Profile extends React.Component {
             <div style={{height: "25%", paddingLeft: "5%"}}>
               <img height="100%" src="https://www.petfinder.com/wp-content/uploads/2012/11/140272627-grooming-needs-senior-cat-632x475.jpg" />
             </div>
-            <div style={{display: "flex", flexDirection: "column", paddingLeft: "2.5%"}}>
+            <div style={{display: "flex", width: 600, flexDirection: "column", paddingLeft: "2.5%"}}>
               <p>Mr. Blue</p>
               <small>Available for Adoption!</small>
               <small>Located in Seattle, Washington</small>
