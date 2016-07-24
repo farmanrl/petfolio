@@ -22,7 +22,9 @@ export default class PetPalsList extends React.Component {
              <PetPal key={index}
                      name={this.state.petList[pet].name}
                      location={this.state.petList[pet].location}
-                     image={this.state.petList[pet].image} />
+                     image={this.state.petList[pet].image}
+                     uid={this.state.petList[pet].uid}
+             />
            ))}
         </div>
       );

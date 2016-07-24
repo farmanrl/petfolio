@@ -1,7 +1,17 @@
 import React from 'react';
+import firebase from 'firebase';
 import {Button, PageHeader} from 'react-bootstrap';
 export default class PetPal extends React.Component {
+  componentDidMount() {
+    firebase.database().ref('petPlaces').on(
+      'value',
+      (snapshot) => {
+        this.setState({petPlaces: snapshot.val()});
+      }
+    );
+  }
   render() {
+    console.log(this.state.petPlaces[this.props.uid]);
     return (
       <div>
         <PageHeader>
@@ -14,7 +24,7 @@ export default class PetPal extends React.Component {
                 <p>{this.props.name}</p>
                 <small>Available for Adoption!</small>
                 <small style={{paddingTop: 10}}>Located in {this.props.location}</small>
-                <small style={{paddingTop: 10}}>Hosted by {this.props.place}</small>
+                <small style={{paddingTop: 10}}>Hosted by {this.state.petPlaces[this.props.uid].name}</small>
               </div>
               <div style={{marginLeft: 100}}>
                 <Button bsStyle="primary" bsSize="large">Follow</Button>
@@ -35,5 +45,5 @@ PetPal.propTypes = {
   name: React.PropTypes.string,
   location: React.PropTypes.string,
   image: React.PropTypes.string,
-  place: React.PropTypes.string,
+  uid: React.PropTypes.string,
 };
