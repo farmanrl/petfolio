@@ -2,6 +2,8 @@ import React from 'react';
 import Login from './Login';
 import AddPlaceForm from './AddPlaceForm';
 import AddPetForm from './AddPetForm';
+import AddPostForm from './AddPostForm';
+import AddPhotoForm from './AddPhotoForm';
 
 export default class Home extends React.Component {
   render() {
@@ -11,6 +13,8 @@ export default class Home extends React.Component {
         <div style={{width: "50%"}}>
           <AddPlaceForm />
           <AddPetForm />
+          <AddPostForm />
+          <AddPhotoForm />
         </div>
       </div>
     );

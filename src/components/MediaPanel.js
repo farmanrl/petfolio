@@ -1,6 +1,5 @@
 import React from 'react';
 import {Panel, Image, Grid, Row, Col} from 'react-bootstrap';
-import Infinite from './Infinite';
 
 export default class MediaPanel extends React.Component {
   render() {

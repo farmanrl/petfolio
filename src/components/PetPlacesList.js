@@ -13,6 +13,7 @@ export default class PetPlacesList extends React.Component {
   }
   render() {
     if (this.state !== null) {
+      console.log(this.state.petPlaces);
       return (
         <div>
           <h1 style={{paddingLeft: "5%"}}>Pet Places</h1>
@@ -22,12 +23,13 @@ export default class PetPlacesList extends React.Component {
                  key={index}
                  name={this.state.petPlaces[place].name}
                  location={this.state.petPlaces[place].location}
-                 image={this.state.petPlaces[place].image} />
+                 image={this.state.petPlaces[place].image}
+                 pets={this.state.petPlaces[place].pets}
+             />
            ))}
         </div>
       );
     }
-    console.log("null");
     return null;
   }
 }

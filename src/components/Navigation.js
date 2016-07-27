@@ -19,12 +19,8 @@ export default class Navigation extends React.Component {
               <a href="#">Petfolio</a>
             </Navbar.Brand>
             <Login/>
-            <Navbar.Toggle />
           </Navbar.Header>
-          <Navbar.Collapse>
             <Nav>
-              <NavItem eventKey={1} href="#">Pet Finder</NavItem>
-              <NavItem eventKey={2} href="#">Place Finder</NavItem>
               <NavDropdown eventKey={3} title="Create a Place" id="basic-nav-dropdown">
                 <div style={{width: 400}}>
                   <AddPlaceForm />
@@ -36,11 +32,6 @@ export default class Navigation extends React.Component {
                 </div>
               </NavDropdown>
             </Nav>
-            <Nav pullRight>
-              <NavItem eventKey={1} href="#">About Us</NavItem>
-              <NavItem eventKey={2} href="#">Pet FAQs</NavItem>
-            </Nav>
-          </Navbar.Collapse>
         </Navbar>
       </div>
     );
