@@ -3,6 +3,10 @@ import firebase from 'firebase';
 import PetPal from './PetPal';
 
 export default class PetPalsList extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {petList: {}, petPlaces: {}};
+  }
   componentDidMount() {
     firebase.database().ref('petList').on(
       'value',
@@ -10,10 +14,16 @@ export default class PetPalsList extends React.Component {
         this.setState({petList: snapshot.val()});
       }
     );
+    firebase.database().ref('petPlaces').on(
+      'value',
+      (snapshot) => {
+        this.setState({petPlaces: snapshot.val()});
+      }
+    );
   }
   render() {
+    console.log(this.state);
     if (this.state !== null) {
-      console.log(this.state);
       return (
         <div>
           <h1 style={{paddingLeft: "5%"}}>Pet Pals</h1>
@@ -22,7 +32,9 @@ export default class PetPalsList extends React.Component {
              <PetPal key={index}
                      name={this.state.petList[pet].name}
                      location={this.state.petList[pet].location}
-                     image={this.state.petList[pet].image} />
+                     image={this.state.petList[pet].image}
+                     place={this.state.petPlaces[this.state.petList[pet].place].name}
+             />
            ))}
         </div>
       );
