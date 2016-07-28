@@ -8,7 +8,7 @@ export function authorizeUser() {
   firebase.auth()
           .signInWithPopup(provider);
   var uid = firebase.auth().currentUser.uid;
-  firebase.database().ref('users/').set({uid});
+  firebase.database().ref('users/' + uid + '/').set({email: firebase.auth().currentUser.email});
 }
 
 //Database
@@ -25,8 +25,7 @@ export function addPetPlace(name, location, image) {
 export function addPetProfile(name, location, image) {
   var uid = firebase.auth().currentUser.uid;
   var petKey = firebase.database().ref().child('petPlaces/' + uid + '/').push().key;
-  firebase.database().ref('petPlaces/' + uid + '/pets').push({
-    petKey,
+  firebase.database().ref('petPlaces/' + uid + '/pets/' + petKey).set({
     name,
   });
   firebase.database().ref('petList/' + petKey).set({
@@ -39,7 +38,6 @@ export function addPetProfile(name, location, image) {
 
 export function addPost(petKey, post) {
   var uid = firebase.auth().currentUser.uid;
-  var postKey = firebase.database().ref().child('petPlaces/' + uid + '/').push().key;
   firebase.database().ref('petPlaces/' + uid + '/pets')
           .on('value', (snapshot) => {
             snapshot.forEach((childSnapshot) => {
@@ -49,7 +47,6 @@ export function addPost(petKey, post) {
             });
             console.log(petKey);
             firebase.database().ref('petPlaces/' + uid + '/posts/').push({
-              postKey,
               post,
               petKey,
             });
@@ -58,7 +55,6 @@ export function addPost(petKey, post) {
 
 export function addPhoto(petKey, photo) {
   var uid = firebase.auth().currentUser.uid;
-  var photoKey = firebase.database().ref().child('petPlaces/' + uid + '/').push().key;
   firebase.database().ref('petPlaces/' + uid + '/pets')
                 .on('value', (snapshot) => {
                   snapshot.forEach((childSnapshot) => {
@@ -67,11 +63,28 @@ export function addPhoto(petKey, photo) {
                     }
                   });
                   firebase.database().ref('petPlaces/' + uid + '/photos/').push({
-                    photoKey,
                     photo,
                     petKey,
                   });
                 });
+}
+
+export function followPet(petKey, name) {
+  console.log('following');
+  var uid = firebase.auth().currentUser.uid;
+  firebase.database().ref('users/' + uid + '/followedPets/' + petKey + '/').set({name: name});
+}
+
+export function adoptPet(petKey, name, placeKey) {
+  console.log('adopting');
+  var uid = firebase.auth().currentUser.uid;
+  firebase.database().ref('petPlaces/' + uid + '/pets/' + petKey).set({
+    name: name
+  });
+  firebase.database().ref('petList/' + petKey).update({
+    place: uid
+  });
+  firebase.database().ref('petPlaces/' + placeKey + '/pets/' + petKey + '/').remove();
 }
 
 //Storage

@@ -22,7 +22,6 @@ export default class PetPalsList extends React.Component {
     );
   }
   render() {
-    console.log(this.state);
     if (this.state !== null) {
       return (
         <div>
@@ -30,10 +29,12 @@ export default class PetPalsList extends React.Component {
           <h4 style={{paddingLeft: "5%"}}>Connect with pets in need that meet your needs</h4>
           {Object.keys(this.state.petList).map((pet, index) => (
              <PetPal key={index}
+                     petKey={pet}
                      name={this.state.petList[pet].name}
                      location={this.state.petList[pet].location}
                      image={this.state.petList[pet].image}
                      place={this.state.petPlaces[this.state.petList[pet].place].name}
+                     placeKey={this.state.petList[pet].place}
              />
            ))}
         </div>

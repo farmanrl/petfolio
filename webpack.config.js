@@ -10,7 +10,7 @@ module.exports = {
     ],
   },
   output: {
-    filename: 'bundle.js'
+    filename: './build/bundle.js'
   },
   entry: './src/client/index.js'
 };

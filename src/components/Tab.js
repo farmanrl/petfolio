@@ -21,7 +21,7 @@ export default class Tab extends React.Component {
         <Nav bsStyle="tabs" justified activeKey={this.state.activekey} onSelect={this.handleSelect}>
           <NavItem eventKey={1} title="Item"><h4>Pet Feed</h4></NavItem>
           <NavItem eventKey={2} title="Item"><h4>Pet Pals</h4></NavItem>
-          <NavItem eventKey={3} title="Item"><h4>Pet Places</h4></NavItem>
+          <NavItem eventKey={3} title="Item"><h4>Pet Hosts</h4></NavItem>
         </Nav>
         <div>
           {(this.state.activekey === 1) && <Home />}
