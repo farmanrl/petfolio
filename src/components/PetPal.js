@@ -1,10 +1,22 @@
 import React from 'react';
 import firebase from 'firebase';
 import * as firebaseFunctions from '../firebase';
-import {Button} from 'react-bootstrap';
+import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
+import FlatButton from 'material-ui/FlatButton';
+import Avatar from 'material-ui/Avatar';
 
 export default class PetPal extends React.Component {
-  componentDidMount() {
+  constructor(props) {
+    super(props);
+    this.state = {
+      expanded: false,
+      petPlaces: {},
+    };
+    this.handleExpandChange = this.handleExpandChange.bind(this);
+    this.handleFollow = this.handleFollow.bind(this);
+    this.handleAdopt = this.handleAdopt.bind(this);
+  }
+  componentWillMount() {
     firebase.database().ref('petPlaces').on(
       'value',
       (snapshot) => {
@@ -12,70 +24,48 @@ export default class PetPal extends React.Component {
       }
     );
   }
+
+  handleExpandChange(expanded) {
+    this.setState({expanded: expanded});
+  }
+
+  handleFollow() {
+    firebaseFunctions.followPet(this.props.petKey, this.props.name);
+  }
+
+  handleAdopt() {
+    firebaseFunctions.adoptPet(this.props.petKey, this.props.name, this.props.placeKey);
+  }
+
   render() {
-    return (
-      <div style={{display: 'flex',
-                   justifyContent: 'space-between',
-                   padding: '2.5% 5% 2.5% 5%',
-                   alignItems: 'center',
-                   borderBottomStyle: 'inset',}}>
-        <div style={{display: 'flex',
-                     justifyContent: 'space-between',
-                     alignItems: 'center'}}>
-          <div style={{display: 'flex',
-                       justifyContent: 'flex-start'}}>
-            <img style={{height: 200,
-                         width: 200,
-                         borderRadius: '50%',
-                         borderStyle: 'solid',
-                         borderWidth: 10,
-                         borderColor: '#4CAF50',}}
-                 src={this.props.image} />
-        <div style={{paddingLeft: '5%'}}>
-          <div style={{display: 'flex',
-                       justifyContent: 'space-between',
-                       alignItems: 'center',}}>
-            <div style={{display: 'flex',
-                         flexDirection: 'column',
-                         justifyContent: 'center',
-                         width: 600}}>
-              <h1>{this.props.name}</h1>
-              <h3 style={{marginTop: 12}}>
-                Available for Adoption!
-              </h3>
-              <h3 style={{marginTop: 12}}>
-                Located in {this.props.location}
-              </h3>
-              <h3 style={{marginTop: 12}}>
-                Hosted by {this.props.place}
-              </h3>
-            </div>
-          </div>
-        </div>
-          </div>
-        </div>
-        <div style={{display: 'flex',
-                     flexWrap: 'wrap',
-                     justifyContent: 'space-between',
-                     alignItems: 'center',
-                     width: '20%',
-                     height: '15%'}}>
-          <Button bsStyle='primary'
-                  bsSize='large'
-                  onClick={() => firebaseFunctions
-                    .followPet(this.props.petKey, this.props.name)}>
-            Follow
-          </Button>
-          <Button
-              bsStyle='success'
-              bsSize='large'
-              onClick={() => firebaseFunctions
-                .adoptPet(this.props.petKey, this.props.name, this.props.placeKey)}>
-            Adopt
-          </Button>
-        </div>
-      </div>
-    );
+    if (this.state !== null) {
+      return (
+        <Card containerStyle={{padding: "8 0 8 0", width: "90%", margin: 'auto'}} expanded={this.state.expanded} onExpandChange={this.handleExpandChange}>
+          <CardHeader
+              title={<h1>{this.props.name}</h1>}
+              titleStyle={{paddingLeft: 48}}
+              subtitle={<div><h3>Located at {this.props.location}</h3>
+                             <h3>Available for Adoption!</h3>
+                             <h3>Hosted by {this.props.place}</h3></div>}
+              subtitleStyle={{paddingLeft: 48}}
+              avatar={<img style={{height: 196,
+                                   width: 196,
+                                   borderStyle: 'solid',
+                                   borderWidth: 8,
+                                   borderRadius: "50%",
+                                   borderColor: '#4CAF50',}}
+                 src={this.props.image} />}
+              actAsExpander={true}
+              showExpandableButton={true}
+          />
+          <CardActions>
+            <FlatButton primary={true} label="Follow" onTouchTap={this.handleSubscribe} />
+            <FlatButton secondary={true} label="Adopt" onTouchTap={this.handleContact} />
+          </CardActions>
+        </Card>
+      );
+    }
+    return null;
   }
 }
 

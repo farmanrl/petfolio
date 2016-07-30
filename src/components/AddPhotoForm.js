@@ -1,41 +1,56 @@
 import React from 'react';
-import * as firebase from '../firebase';
-import {Button, FormGroup, ControlLabel, FormControl} from 'react-bootstrap';
+import firebase from 'firebase';
+import * as firebaseFunctions from '../firebase';
+import AutoComplete from 'material-ui/AutoComplete';
+import TextField from 'material-ui/TextField';
+import FlatButton from 'material-ui/FlatButton';
 
 export default class AddPhotoForm extends React.Component {
+  componentDidMount() {
+    var uid = firebase.auth().currentUser.uid;
+    firebase.database().ref('petPlaces/' + uid + '/pets/').on(
+      'value',
+      (snapshot) => {
+        var petKeys = {};
+        console.log('snapshot',snapshot.val());
+        snapshot.forEach((childSnapshot) => {
+          console.log('childsnapshot', childSnapshot.val());
+          petKeys[childSnapshot.val().name] = childSnapshot.key;
+        });
+        this.setState({petKeys: petKeys});
+      }
+    );
+  }
   constructor(props) {
     super(props);
-    this.state = {petValue: '', photoValue: ''};
+    this.state = {petKeys: {}, petValue: null, photoValue: null};
     this.handlePetChange = this.handlePetChange.bind(this);
     this.handlePhotoChange = this.handlePhotoChange.bind(this);
   }
-  handlePetChange(event) {
-    this.setState({petValue: event.target.value});
+  handlePetChange(value) {
+    this.setState({petValue: value});
   }
-  handlePhotoChange(event) {
-    this.setState({photoValue: event.target.value});
+  handlePhotoChange(value) {
+    this.setState({photoValue: value});
+  }
+  handleSubmit() {
+    firebaseFunctions.addPhoto(this.state.petKeys[this.state.petValue], this.state.photoValue);
   }
   render() {
     return (
-      <div>
-        <form>
-          <FormGroup controlId="formBasicText">
-            <ControlLabel>Add a Pet Photo</ControlLabel>
-            <FormControl
-                type="text"
-                value={this.state.petValue}
-                placeholder="Tag a pet"
-                onChange={this.handlePetChange}
-            />
-            <FormControl
-                type="text"
-                value={this.state.photoValue}
-                placeholder="Enter photo"
-                onChange={this.handlePhotoChange}
-            />
-          </FormGroup>
-        </form>
-        <Button onClick={() => firebase.addPhoto(this.state.petValue, this.state.photoValue)}>Add Pet Photo</Button>
+      <div style={{padding: "16 16 16 16", width: 320}}>
+        <TextField
+            hintText="Add a photo"
+            onChange={this.handlePetChange}
+        /><br />
+        <AutoComplete
+            floatingLabelText="Tag a pet"
+            filter={AutoComplete.fuzzyFilter}
+            dataSource={Object.keys(this.state.petKeys)}
+            maxSearchResults={5}
+            onNewRequest={this.handlePetChange}
+        />
+        <FlatButton label="Submit" onTouchTap={this.handleSubmit} />
       </div>
     );
   }

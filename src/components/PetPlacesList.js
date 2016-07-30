@@ -13,17 +13,22 @@ export default class PetPlacesList extends React.Component {
   }
   render() {
     if (this.state !== null) {
+      console.log("PetPlacesList State", this.state);
       return (
         <div>
-          <h1 style={{paddingLeft: "5%"}}>Pet Hosts</h1>
-          <h4 style={{paddingLeft: "5%"}}>Find adoption centers, agencies, and other adoption opportunities!</h4>
+          <div style={{paddingLeft: "5%", paddingBottom: 8}}>
+            <h1>Pet Hosts</h1>
+            <h4>Find adoption centers, agencies, and other adoption opportunities!</h4>
+          </div>
           {Object.keys(this.state.petPlaces).map((place, index) => (
              <PetPlace
                  key={index}
+                 placeKey={place}
                  name={this.state.petPlaces[place].name}
                  location={this.state.petPlaces[place].location}
                  image={this.state.petPlaces[place].image}
                  pets={this.state.petPlaces[place].pets}
+                 photos={this.state.petPlaces[place].photos}
              />
            ))}
         </div>

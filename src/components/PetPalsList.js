@@ -7,7 +7,7 @@ export default class PetPalsList extends React.Component {
     super(props);
     this.state = {petList: {}, petPlaces: {}};
   }
-  componentDidMount() {
+  componentWillMount() {
     firebase.database().ref('petList').on(
       'value',
       (snapshot) => {
@@ -25,8 +25,10 @@ export default class PetPalsList extends React.Component {
     if (this.state !== null) {
       return (
         <div>
-          <h1 style={{paddingLeft: "5%"}}>Pet Pals</h1>
-          <h4 style={{paddingLeft: "5%"}}>Connect with pets in need that meet your needs</h4>
+          <div style={{paddingLeft: "5%", paddingBottom: 8}}>
+            <h1>Pet Pals</h1>
+            <h4>Connect with pets in need that meet your needs</h4>
+          </div>
           {Object.keys(this.state.petList).map((pet, index) => (
              <PetPal key={index}
                      petKey={pet}

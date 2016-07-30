@@ -1,24 +1,39 @@
 import React from 'react';
-import {Jumbotron} from 'react-bootstrap';
 import Navigation from './Navigation';
-import Profile from './Profile';
-import AddPetForm from './AddPetForm';
-import AddPlaceForm from './AddPlaceForm';
-import Login from './Login';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
+import {
+  cyan500, cyan700,
+  pinkA200, greenA700, green700, blue500, blue700,
+  grey100, grey400, grey500,
+} from 'material-ui/styles/colors';
+import AddButton from './AddButton';
+import NavTab from './NavTab';
 
-import Tab from './Tab';
+const muiTheme = getMuiTheme({
+  palette: {
+    primary1Color: blue500,
+    primary2Color: blue700,
+    primary3Color: grey400,
+    accent1Color: greenA700,
+    accent2Color: grey100,
+    accent3Color: grey500,
+  },
+});
 
 export default class Petfolio extends React.Component {
   render() {
     return (
-      <div>
-        <div style={{display: "flex", alignItems: "center",}}>
-          <img style={{height: 200, paddingLeft: 100}} src="http://i.imgur.com/HcCeSUu.png"/>
-          <h1 style={{paddingLeft: 50, fontSize: "4em"}}>The Adaptive Adoption Network</h1>
+      <MuiThemeProvider muiTheme={muiTheme}>
+        <div>
+          <Navigation />
+          <NavTab />
+          <div style={{display: 'fixed', bottom: 48, right: 48}}>
+            <AddButton />
+          </div>
         </div>
-        <Navigation />
-        <Tab />
-      </div>
+      </MuiThemeProvider>
     );
   }
 }

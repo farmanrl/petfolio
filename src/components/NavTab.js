@@ -15,31 +15,24 @@ export default class NavTab extends React.Component {
   }
 
   handleChange(value) {
-    console.log("value", value);
-    console.log("typeof", typeof value);
-    if (typeof value !== "string") {
-      return;
-    }
     this.setState({
       value: value,
     });
   }
 
   render() {
-    console.log("state.value", this.state.value);
-    console.log("this should render");
     return (
       <Tabs
           value={this.state.value}
           onChange={this.handleChange}
       >
-        <Tab label="Tab A" value="a" >
+        <Tab label="Pet Home" value="a" >
           <Home />
         </Tab>
-        <Tab label="Tab B" value="b">
+        <Tab label="Pet Pals" value="b">
           <PetPalsList />
         </Tab>
-        <Tab label="Tab C" value="c">
+        <Tab label="Pet Hosts" value="c">
           <PetPlacesList />
         </Tab>
       </Tabs>

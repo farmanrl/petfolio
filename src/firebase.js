@@ -9,6 +9,7 @@ export function authorizeUser() {
           .signInWithPopup(provider);
   var uid = firebase.auth().currentUser.uid;
   firebase.database().ref('users/' + uid + '/').set({email: firebase.auth().currentUser.email});
+  return uid;
 }
 
 //Database
@@ -53,30 +54,38 @@ export function addPost(petKey, post) {
           });
 }
 
-export function addPhoto(petKey, photo) {
+export function addPhoto(petKey, image) {
+  var photoKey = firebase.database().ref().child('petPlaces/' + uid + '/').push().key;
   var uid = firebase.auth().currentUser.uid;
-  firebase.database().ref('petPlaces/' + uid + '/pets')
-                .on('value', (snapshot) => {
-                  snapshot.forEach((childSnapshot) => {
-                    if (childSnapshot.name == petKey) {
-                      petKey = childSnapshot.petKey;
-                    }
-                  });
-                  firebase.database().ref('petPlaces/' + uid + '/photos/').push({
-                    photo,
-                    petKey,
-                  });
-                });
+  firebase.database()
+          .ref('petPlaces/' + uid + '/pets')
+          .on('value', (snapshot) => {
+            snapshot.forEach((childSnapshot) => {
+              if (childSnapshot.name == petKey) {
+                petKey = childSnapshot.petKey;
+              }
+            });
+            firebase.database()
+                    .ref('petPlaces/' + uid + '/photos/' + photoKey)
+                    .set({
+                      petKey,
+                    });
+            firebase.database()
+                    .ref('photos/' + photoKey + '/')
+                    .set({
+                      uid,
+                      image,
+                      petKey,
+                    });
+          });
 }
 
 export function followPet(petKey, name) {
-  console.log('following');
   var uid = firebase.auth().currentUser.uid;
   firebase.database().ref('users/' + uid + '/followedPets/' + petKey + '/').set({name: name});
 }
 
 export function adoptPet(petKey, name, placeKey) {
-  console.log('adopting');
   var uid = firebase.auth().currentUser.uid;
   firebase.database().ref('petPlaces/' + uid + '/pets/' + petKey).set({
     name: name
@@ -85,6 +94,11 @@ export function adoptPet(petKey, name, placeKey) {
     place: uid
   });
   firebase.database().ref('petPlaces/' + placeKey + '/pets/' + petKey + '/').remove();
+}
+
+export function subscribePlace(placeKey, name) {
+  var uid = firebase.auth().currentUser.uid;
+  firebase.database().ref('users/' + uid + '/followedPlaces/' + placeKey + '/').set({name: name});
 }
 
 //Storage
