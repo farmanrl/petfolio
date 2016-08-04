@@ -12,7 +12,7 @@ export default class PetPlace extends React.Component {
     super(props);
     this.state = {
       expanded: false,
-      petList: {},
+      petList: null,
       photoList: null,
     };
     this.handleExpandChange = this.handleExpandChange.bind(this);
@@ -20,16 +20,16 @@ export default class PetPlace extends React.Component {
     this.handleContact = this.handleContact.bind(this);
   }
   componentWillMount() {
-    firebase.database().ref('petList').on(
-      'value',
-      (snapshot) => {
-        this.setState({petList: snapshot.val()});
-      }
-    );
     firebase.database().ref('photos').on(
       'value',
       (snapshot) => {
         this.setState({photoList: snapshot.val()});
+      }
+    );
+    firebase.database().ref('petList').on(
+      'value',
+      (snapshot) => {
+        this.setState({petList: snapshot.val()});
       }
     );
   }
@@ -47,7 +47,6 @@ export default class PetPlace extends React.Component {
 
   render() {
     if (this.state !== null) {
-      console.log("PetPlace state", this.state);
       return (
         <Card containerStyle={{padding: "8 0 8 0", width: "90%", margin: 'auto'}} expanded={this.state.expanded} onExpandChange={this.handleExpandChange}>
           <CardHeader
@@ -90,8 +89,8 @@ export default class PetPlace extends React.Component {
             </div>
           </CardText>
           <CardActions>
-            <FlatButton primary="true" label="Subscribe" onTouchTap={this.handleSubscribe} />
-            <FlatButton secondary="true" label="Contact" onTouchTap={this.handleContact} />
+            <FlatButton primary={true} label="Subscribe" onTouchTap={this.handleSubscribe} />
+            <FlatButton secondary={true} label="Contact" onTouchTap={this.handleContact} />
           </CardActions>
         </Card>
       );

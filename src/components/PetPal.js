@@ -4,6 +4,7 @@ import * as firebaseFunctions from '../firebase';
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import Avatar from 'material-ui/Avatar';
+import PetPhotoItem from './PetPhotoItem';
 
 export default class PetPal extends React.Component {
   constructor(props) {
@@ -21,6 +22,18 @@ export default class PetPal extends React.Component {
       'value',
       (snapshot) => {
         this.setState({petPlaces: snapshot.val()});
+      }
+    );
+    firebase.database().ref('photos').on(
+      'value',
+      (snapshot) => {
+        var photos = [];
+        snapshot.forEach((childSnapshot) => {
+          if (childSnapshot.val().petKey === this.props.petKey) {
+            photos.push(childSnapshot.val().image);
+          }
+        });
+        this.setState({photoList: photos});
       }
     );
   }
@@ -58,9 +71,20 @@ export default class PetPal extends React.Component {
               actAsExpander={true}
               showExpandableButton={true}
           />
+          <CardTitle title="Photos" expandable={true}/>
+          <CardText expandable={true}>
+            <div>
+              {this.state.photos &&
+               (this.state.photos)
+                 .map((photo,index) => (
+                   <PetPhotoItem key={index}
+                                 photo={this.state.photoList[photo]} />
+                 ))}
+            </div>
+          </CardText>
           <CardActions>
-            <FlatButton primary={true} label="Follow" onTouchTap={this.handleSubscribe} />
-            <FlatButton secondary={true} label="Adopt" onTouchTap={this.handleContact} />
+            <FlatButton primary={true} label="Follow" onTouchTap={this.handleFollow} />
+            <FlatButton secondary={true} label="Adopt" onTouchTap={this.handleAdopt} />
           </CardActions>
         </Card>
       );

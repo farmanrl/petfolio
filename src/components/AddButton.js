@@ -8,14 +8,13 @@ import AddPlaceForm from './AddPlaceForm';
 import AddPetForm from './AddPetForm';
 import AddPostForm from './AddPostForm';
 import AddPhotoForm from './AddPhotoForm';
+import firebase from 'firebase';
 
 export default class AddButton extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      anchorMenu: null,
-      anchorItem: null,
+      anchorEl: null,
       openMenu: false,
       openPlace: false,
       openPet: false,
@@ -26,7 +25,6 @@ export default class AddButton extends React.Component {
     this.handleAddPet = this.handleAddPet.bind(this);
     this.handleAddPhoto = this.handleAddPhoto.bind(this);
     this.handleMenuClose = this.handleMenuClose.bind(this);
-    this.handleItemClose = this.handleItemClose.bind(this);
   }
   handleTouchTap(event) {
     this.setState({
@@ -34,32 +32,31 @@ export default class AddButton extends React.Component {
       openPlace: false,
       openPet: false,
       openPhoto: false,
-      anchorMenu: event.currentTarget,
+      anchorEl: event.currentTarget,
     });
   }
-  handleAddPhoto(event) {
+  handleAddPhoto() {
     this.setState({
+      openMenu: false,
       openPlace: false,
       openPet: false,
-      openPhoto: !this.state.openPhoto,
-      anchorItem: event.currentTarget,
+      openPhoto: true,
     });
   }
-  handleAddPlace(event) {
+  handleAddPlace() {
     this.setState({
-      openPlace: !this.state.openPlace,
+      openMenu: false,
+      openPlace: true,
       openPet: false,
       openPhoto: false,
-      anchorItem: event.currentTarget,
-
     });
   }
-  handleAddPet(event) {
+  handleAddPet() {
     this.setState({
+      openMenu: false,
       openPlace: false,
-      openPet: !this.state.openPet,
+      openPet: true,
       openPhoto: false,
-      anchorItem: event.currentTarget,
     });
   }
   handleMenuClose() {
@@ -70,59 +67,35 @@ export default class AddButton extends React.Component {
       openPhoto: false,
     });
   }
-  handleItemClose() {
-    this.setState({
-      openPlace: false,
-      openPet: false,
-      openPhoto: false,
-    });
-  }
   render() {
+    console.log(firebase.auth().currentUser === null);
     return (
       <div style={{position: 'fixed', bottom: 48, right: 48}}>
-        <FloatingActionButton secondary={true} onTouchTap={this.handleTouchTap}>
+        <FloatingActionButton secondary={true} onTouchTap={this.handleTouchTap} disabled={firebase.auth().currentUser !== null}>
           <ContentAdd />
         </FloatingActionButton>
         <Popover
             open={this.state.openMenu}
-            anchorEl={this.state.anchorMenu}
+            anchorEl={this.state.anchorEl}
             anchorOrigin={{horizontal: 'middle', vertical: 'top'}}
-            targetOrigin={{horizontal: 'right', vertical: 'bottom'}}
+            targetOrigin={{horizontal: 'middle', vertical: 'bottom'}}
             onRequestClose={this.handleMenuClose}
         >
           <Menu autoWidth={true}>
-            <MenuItem primaryText="Add Place" onTouchTap={this.handleAddPlace} />
+            <MenuItem primaryText="Add Place" onTouchTap={this.handleAddPlace} disabled={false}/>
             <MenuItem primaryText="Add Pet" onTouchTap={this.handleAddPet} />
             <MenuItem primaryText="Add Photo" onTouchTap={this.handleAddPhoto} />
           </Menu>
         </Popover>
-        <Popover
-            open={this.state.openPlace}
-            anchorEl={this.state.anchorItem}
-            anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-            targetOrigin={{horizontal: 'right', vertical: 'bottom'}}
-            onRequestClose={this.handleItemClose}
-        >
-          <AddPlaceForm />
-        </Popover>
-        <Popover
-            open={this.state.openPet}
-            anchorEl={this.state.anchorItem}
-            anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-            targetOrigin={{horizontal: 'right', vertical: 'bottom'}}
-            onRequestClose={this.handleItemClose}
-        >
+        {this.state.openPlace &&
+         <AddPlaceForm />
+        }
+        {this.state.openPet &&
           <AddPetForm />
-        </Popover>
-        <Popover
-            open={this.state.openPhoto}
-            anchorEl={this.state.anchorItem}
-            anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-            targetOrigin={{horizontal: 'right', vertical: 'bottom'}}
-            onRequestClose={this.handleItemClose}
-        >
+        }
+        {this.state.openPhoto &&
           <AddPhotoForm />
-        </Popover>
+        }
       </div>
     );
   }

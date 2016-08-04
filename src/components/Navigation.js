@@ -13,6 +13,8 @@ export default class Navigation extends React.Component {
             children={
               <div style={{display: 'flex', height: 'inherit', alignItems: 'center'}}>
                 <RaisedButton label="User" onTouchTap={() => firebaseFunctions.authorizeUser()} />
+                <RaisedButton label="Sign out" onTouchTap={() => firebaseFunctions.signOut()} />
+
               </div>
             }
         />

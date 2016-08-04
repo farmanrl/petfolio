@@ -9,21 +9,43 @@ export function authorizeUser() {
           .signInWithPopup(provider);
   var uid = firebase.auth().currentUser.uid;
   firebase.database().ref('users/' + uid + '/').set({email: firebase.auth().currentUser.email});
-  return uid;
 }
 
+export function signOut() {
+  firebase.auth().signOut().then(() => {
+    console.log('Signed Out');
+  }, (error) => {
+    console.error('Sign Out Error', error);
+  });
+}
+
+export function getUid() {
+  return firebase.auth().currentUser.uid;
+}
 //Database
+
+export function getHost() {
+  var uid = getUid();
+  firebase.database().ref('users/' + uid + '/host/').on(
+    'value',
+    (snapshot) => {
+      return snapshot.val().placeKey;
+    }
+  );
+}
 
 export function addPetPlace(name, location, image) {
   var uid = firebase.auth().currentUser.uid;
+  var placeKey = firebase.database().ref().child('petPlaces/' + uid + '/').push().key;
   firebase.database().ref('petPlaces/' + uid).set({
     name: name,
     location: location,
     image: image,
   });
+  firebase.database().ref('users/' + uid + '/host/' + placeKey).set({name: name});
 }
 
-export function addPetProfile(name, location, image) {
+export function addPetProfile(name, type, location, image, description, age, gender, size, care, energy, training) {
   var uid = firebase.auth().currentUser.uid;
   var petKey = firebase.database().ref().child('petPlaces/' + uid + '/').push().key;
   firebase.database().ref('petPlaces/' + uid + '/pets/' + petKey).set({
@@ -31,8 +53,16 @@ export function addPetProfile(name, location, image) {
   });
   firebase.database().ref('petList/' + petKey).set({
     name: name,
+    type: type,
     location: location,
+    description: description,
     image: image,
+    age: age,
+    gender: gender,
+    size: size,
+    energy: energy,
+    care: care,
+    training: training,
     place: uid,
   });
 }

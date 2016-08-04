@@ -13,7 +13,6 @@ export default class PetPlacesList extends React.Component {
   }
   render() {
     if (this.state !== null) {
-      console.log("PetPlacesList State", this.state);
       return (
         <div>
           <div style={{paddingLeft: "5%", paddingBottom: 8}}>
