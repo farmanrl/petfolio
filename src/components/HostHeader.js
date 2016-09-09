@@ -1,13 +1,12 @@
 import React from 'react';
 import firebase from 'firebase';
-import * as firebaseFunctions from '../firebase';
-import PetPlaceItem from './PetPlaceItem';
-import PetPhotoItem from './PetPhotoItem';
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
+import {getPhotoList, getPetList, subscribeHost} from '../firebase';
+import PetSubheader from './PetSubheader';
+import PhotoSubheader from './PhotoSubheader';
+import {Card, CardActions, CardHeader, CardTitle, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
-import Avatar from 'material-ui/Avatar';
 
-export default class PetPlace extends React.Component {
+export default class HostHeader extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -20,18 +19,9 @@ export default class PetPlace extends React.Component {
     this.handleContact = this.handleContact.bind(this);
   }
   componentWillMount() {
-    firebase.database().ref('photos').on(
-      'value',
-      (snapshot) => {
-        this.setState({photoList: snapshot.val()});
-      }
-    );
-    firebase.database().ref('petList').on(
-      'value',
-      (snapshot) => {
-        this.setState({petList: snapshot.val()});
-      }
-    );
+    var photoList = getPhotoList();
+    var petList = getPetList();
+    this.setState({photoList: photoList, petList: petList});
   }
 
   handleExpandChange(expanded) {
@@ -39,7 +29,7 @@ export default class PetPlace extends React.Component {
   }
 
   handleSubscribe() {
-    firebaseFunctions.subscribePlace(this.props.placeKey, this.props.name);
+    subscribeHost(this.props.hostKey, this.props.name);
   }
 
   handleContact() {
@@ -48,7 +38,14 @@ export default class PetPlace extends React.Component {
   render() {
     if (this.state !== null) {
       return (
-        <Card containerStyle={{padding: "8 0 8 0", width: "90%", margin: 'auto'}} expanded={this.state.expanded} onExpandChange={this.handleExpandChange}>
+        <Card
+            containerStyle={{
+              padding: "8 0 8 0",
+              width: "90%",
+              margin: 'auto'
+            }}
+            expanded={this.state.expanded}
+            onExpandChange={this.handleExpandChange}>
           <CardHeader
               title={<h1>{this.props.name}</h1>}
               titleStyle={{paddingLeft: 48}}
@@ -69,28 +66,35 @@ export default class PetPlace extends React.Component {
           <CardTitle title="Available Pets" expandable={true} />
           <CardText expandable={true}>
             <div>
-              {this.props.pets &&
+              {this.props.pets && this.state.petList &&
                (Object.keys(this.props.pets))
                  .map((pet,index) => (
-                   <PetPlaceItem key={index}
+                   <PetSubheader key={index}
                                  image={this.state.petList[pet].image} />
                  ))}
             </div>
           </CardText>
-          <CardTitle title="Photos" expandable={true}/>
-          <CardText expandable={true}>
+          <CardTitle title="Photos" expandable={true} />
+          <CardText expandable={true} >
             <div>
-              {this.state.photoList &&
+              {this.state.photoList && this.props.photos &&
                (Object.keys(this.props.photos))
                  .map((photo,index) => (
-                   <PetPhotoItem key={index}
-                                 photo={this.state.photoList[photo].image} />
+                   <PhotoSubheader
+                       key={index}
+                       photo={this.state.photoList[photo].image} />
                  ))}
             </div>
           </CardText>
           <CardActions>
-            <FlatButton primary={true} label="Subscribe" onTouchTap={this.handleSubscribe} />
-            <FlatButton secondary={true} label="Contact" onTouchTap={this.handleContact} />
+            <FlatButton
+                primary={true}
+                label="Subscribe"
+                onTouchTap={this.handleSubscribe} />
+            <FlatButton
+                secondary={true}
+                label="Contact"
+                onTouchTap={this.handleContact} />
           </CardActions>
         </Card>
       );
@@ -99,9 +103,9 @@ export default class PetPlace extends React.Component {
   }
 }
 
-PetPlace.propTypes = {
+HostHeader.propTypes = {
   name: React.PropTypes.string,
-  placeKey: React.PropTypes.string,
+  hostKey: React.PropTypes.string,
   location: React.PropTypes.string,
   image: React.PropTypes.string,
   pets: React.PropTypes.object,

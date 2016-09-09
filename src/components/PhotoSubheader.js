@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default class PetPhotoItem extends React.Component {
+export default class PhotoSubheader extends React.Component {
   render() {
     return (
       <img style={{height: 200, width: 200, marginLeft: "2.5%"}} src={this.props.photo}/>
@@ -8,6 +8,6 @@ export default class PetPhotoItem extends React.Component {
   }
 }
 
-PetPhotoItem.propTypes = {
+PhotoSubheader.propTypes = {
   photo: React.PropTypes.string,
 };

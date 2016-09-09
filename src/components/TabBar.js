@@ -1,10 +1,10 @@
 import React from 'react';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import Home from './Home';
-import PetPalsList from './PetPalsList';
-import PetPlacesList from './PetPlacesList';
+import PetList from './PetList';
+import HostList from './HostList';
 
-export default class NavTab extends React.Component {
+export default class TabBar extends React.Component {
 
   constructor(props) {
     super(props);
@@ -15,32 +15,25 @@ export default class NavTab extends React.Component {
   }
 
   handleChange(value) {
-    console.log("value", value);
-    console.log("typeof", typeof value);
-    if (typeof value !== "string") {
-      return;
-    }
     this.setState({
       value: value,
     });
   }
 
   render() {
-    console.log("state.value", this.state.value);
-    console.log("this should render");
     return (
       <Tabs
           value={this.state.value}
           onChange={this.handleChange}
       >
-        <Tab label="Tab A" value="a" >
+        <Tab label="Pet Home" value="a" >
           <Home />
         </Tab>
-        <Tab label="Tab B" value="b">
-          <PetPalsList />
+        <Tab label="Pet Pals" value="b">
+          <PetList />
         </Tab>
-        <Tab label="Tab C" value="c">
-          <PetPlacesList />
+        <Tab label="Pet Hosts" value="c">
+          <HostList />
         </Tab>
       </Tabs>
     );

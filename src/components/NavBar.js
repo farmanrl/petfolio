@@ -1,10 +1,9 @@
 import React from 'react';
-import firebase from 'firebase';
 import AppBar from 'material-ui/AppBar';
 import RaisedButton from 'material-ui/RaisedButton';
-import * as firebaseFunctions from '../firebase';
+import {signOut, authorizeUser} from '../firebase';
 
-export default class Navigation extends React.Component {
+export default class NavBar extends React.Component {
   render() {
     return (
       <div>
@@ -12,8 +11,8 @@ export default class Navigation extends React.Component {
             title="Petfolio"
             children={
               <div style={{display: 'flex', height: 'inherit', alignItems: 'center'}}>
-                <RaisedButton label="User" onTouchTap={() => firebaseFunctions.authorizeUser()} />
-                <RaisedButton label="Sign out" onTouchTap={() => firebaseFunctions.signOut()} />
+                <RaisedButton label="User" onTouchTap={() => authorizeUser()} />
+                <RaisedButton label="Sign out" onTouchTap={() => signOut()} />
 
               </div>
             }

@@ -1,5 +1,5 @@
 import React from 'react';
-import Navigation from './Navigation';
+import NavBar from './NavBar';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
@@ -9,7 +9,7 @@ import {
   grey100, grey400, grey500,
 } from 'material-ui/styles/colors';
 import AddButton from './AddButton';
-import NavTab from './NavTab';
+import TabBar from './TabBar';
 
 const muiTheme = getMuiTheme({
   palette: {
@@ -27,8 +27,8 @@ export default class Petfolio extends React.Component {
     return (
       <MuiThemeProvider muiTheme={muiTheme}>
         <div>
-          <Navigation />
-          <NavTab />
+          <NavBar />
+          <TabBar />
           <div style={{display: 'fixed', bottom: 48, right: 48}}>
             <AddButton />
           </div>

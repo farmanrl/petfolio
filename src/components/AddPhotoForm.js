@@ -1,6 +1,5 @@
 import React from 'react';
-import firebase from 'firebase';
-import * as firebaseFunctions from '../firebase';
+import {getHostPetKeys, addPhoto} from '../firebase';
 import AutoComplete from 'material-ui/AutoComplete';
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
@@ -8,21 +7,18 @@ import Dialog from 'material-ui/Dialog';
 
 export default class AddPhotoForm extends React.Component {
   componentWillMount() {
-    var uid = firebaseFunctions.getUid();
-    firebase.database().ref('petPlaces/' + uid + '/pets/').on(
-      'value',
-      (snapshot) => {
-        var petKeys = {};
-        snapshot.forEach((childSnapshot) => {
-          petKeys[childSnapshot.val().name] = childSnapshot.key;
-        });
-        this.setState({petKeys: petKeys});
-      }
-    );
+    var petKeys = getHostPetKeys();
+    console.log(petKeys);
+    this.setState({petKeys: petKeys});
   }
   constructor(props) {
     super(props);
-    this.state = {petKeys: null, petValue: null, photoValue: null, open: true};
+    this.state = {
+      petKeys: undefined,
+      petValue: undefined,
+      photoValue: undefined,
+      open: true
+    };
     this.handlePetChange = this.handlePetChange.bind(this);
     this.handlePhotoChange = this.handlePhotoChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -35,7 +31,10 @@ export default class AddPhotoForm extends React.Component {
     this.setState({photoValue: event.target.value});
   }
   handleSubmit() {
-    firebaseFunctions.addPhoto(this.state.petKeys[this.state.petValue], this.state.photoValue);
+    addPhoto(
+      this.state.petKeys[this.state.petValue],
+      this.state.photoValue
+    );
   }
   handleClose() {
     this.setState({open: false});

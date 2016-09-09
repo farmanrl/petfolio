@@ -4,11 +4,9 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
-import AddPlaceForm from './AddPlaceForm';
+import AddHostForm from './AddHostForm';
 import AddPetForm from './AddPetForm';
-import AddPostForm from './AddPostForm';
 import AddPhotoForm from './AddPhotoForm';
-import firebase from 'firebase';
 
 export default class AddButton extends React.Component {
   constructor(props) {
@@ -16,12 +14,12 @@ export default class AddButton extends React.Component {
     this.state = {
       anchorEl: null,
       openMenu: false,
-      openPlace: false,
+      openHost: false,
       openPet: false,
       openPhoto: false,
     };
     this.handleTouchTap = this.handleTouchTap.bind(this);
-    this.handleAddPlace = this.handleAddPlace.bind(this);
+    this.handleAddHost = this.handleAddHost.bind(this);
     this.handleAddPet = this.handleAddPet.bind(this);
     this.handleAddPhoto = this.handleAddPhoto.bind(this);
     this.handleMenuClose = this.handleMenuClose.bind(this);
@@ -29,7 +27,7 @@ export default class AddButton extends React.Component {
   handleTouchTap(event) {
     this.setState({
       openMenu: !this.state.openMenu,
-      openPlace: false,
+      openHost: false,
       openPet: false,
       openPhoto: false,
       anchorEl: event.currentTarget,
@@ -38,15 +36,15 @@ export default class AddButton extends React.Component {
   handleAddPhoto() {
     this.setState({
       openMenu: false,
-      openPlace: false,
+      openHost: false,
       openPet: false,
       openPhoto: true,
     });
   }
-  handleAddPlace() {
+  handleAddHost() {
     this.setState({
       openMenu: false,
-      openPlace: true,
+      openHost: true,
       openPet: false,
       openPhoto: false,
     });
@@ -54,7 +52,7 @@ export default class AddButton extends React.Component {
   handleAddPet() {
     this.setState({
       openMenu: false,
-      openPlace: false,
+      openHost: false,
       openPet: true,
       openPhoto: false,
     });
@@ -62,16 +60,17 @@ export default class AddButton extends React.Component {
   handleMenuClose() {
     this.setState({
       openMenu: false,
-      openPlace: false,
+      openHost: false,
       openPet: false,
       openPhoto: false,
     });
   }
   render() {
-    console.log(firebase.auth().currentUser === null);
     return (
       <div style={{position: 'fixed', bottom: 48, right: 48}}>
-        <FloatingActionButton secondary={true} onTouchTap={this.handleTouchTap} disabled={firebase.auth().currentUser !== null}>
+        <FloatingActionButton
+            secondary={true}
+            onTouchTap={this.handleTouchTap}>
           <ContentAdd />
         </FloatingActionButton>
         <Popover
@@ -82,13 +81,18 @@ export default class AddButton extends React.Component {
             onRequestClose={this.handleMenuClose}
         >
           <Menu autoWidth={true}>
-            <MenuItem primaryText="Add Place" onTouchTap={this.handleAddPlace} disabled={false}/>
-            <MenuItem primaryText="Add Pet" onTouchTap={this.handleAddPet} />
-            <MenuItem primaryText="Add Photo" onTouchTap={this.handleAddPhoto} />
+            <MenuItem
+                primaryText="Add Host"
+                onTouchTap={this.handleAddHost}
+                disabled={false}/>
+            <MenuItem primaryText="Add Pet"
+                      onTouchTap={this.handleAddPet} />
+            <MenuItem primaryText="Add Photo"
+                      onTouchTap={this.handleAddPhoto} />
           </Menu>
         </Popover>
-        {this.state.openPlace &&
-         <AddPlaceForm />
+        {this.state.openHost &&
+         <AddHostForm />
         }
         {this.state.openPet &&
           <AddPetForm />

@@ -7,8 +7,9 @@ export function authorizeUser() {
   provider.addScope('https://www.googleapis.com/auth/userinfo.email');
   firebase.auth()
           .signInWithPopup(provider);
-  var uid = firebase.auth().currentUser.uid;
-  firebase.database().ref('users/' + uid + '/').set({email: firebase.auth().currentUser.email});
+  var uid = getUid();
+  firebase.database().ref('users/' + uid + '/')
+          .set({email: firebase.auth().currentUser.email});
 }
 
 export function signOut() {
@@ -20,38 +21,103 @@ export function signOut() {
 }
 
 export function getUid() {
-  return firebase.auth().currentUser.uid;
+  var uid = firebase.auth().currentUser.uid;
+  return uid;
 }
-//Database
 
-export function getHost() {
+export function getHostKey() {
   var uid = getUid();
-  firebase.database().ref('users/' + uid + '/host/').on(
+  console.log(uid);
+  firebase.database()
+          .ref('users/' + uid + '/hostKey')
+          .once('value')
+          .then((snapshot) => {
+            console.log(snapshot.val());
+            return snapshot.val();
+          });
+}
+
+export function getHostList() {
+  var hostList = firebase.database().ref('hostList/')
+                        .on('value', (snapshot) => {
+                          return snapshot.val();
+                        });
+  return hostList;
+}
+
+export function getPetList() {
+  var petList = firebase.database().ref('petList/')
+                         .on('value', (snapshot) => {
+                           return snapshot.val();
+                         });
+  return petList;
+}
+
+export function getPhotoList() {
+  var petList = firebase.database().ref('photoList/')
+                        .on('value', (snapshot) => {
+                          return snapshot.val();
+                        });
+  return petList;
+}
+
+export function getPetPhotos(petKey) {
+  firebase.database().ref('photoList').on(
     'value',
     (snapshot) => {
-      return snapshot.val().placeKey;
+      var photos = [];
+      snapshot.forEach((childSnapshot) => {
+        if (childSnapshot.val().petKey === petKey) {
+          photos.push(childSnapshot.val().image);
+        }
+      });
+      return photos;
     }
   );
 }
 
-export function addPetPlace(name, location, image) {
-  var uid = firebase.auth().currentUser.uid;
-  var placeKey = firebase.database().ref().child('petPlaces/' + uid + '/').push().key;
-  firebase.database().ref('petPlaces/' + uid).set({
-    name: name,
-    location: location,
-    image: image,
-  });
-  firebase.database().ref('users/' + uid + '/host/' + placeKey).set({name: name});
+export function getHostPetKeys() {
+  var hostKey = getHostKey();
+  var petKeys = firebase.database().ref('/hostList/' + hostKey + '/pets/').on(
+    'value',
+    (snapshot) => {
+      var petKeys = {};
+      snapshot.forEach((childSnapshot) => {
+        petKeys[childSnapshot.val().name] = childSnapshot.key;
+      });
+      return petKeys;
+    }
+  );
+  return petKeys;
 }
 
-export function addPetProfile(name, type, location, image, description, age, gender, size, care, energy, training) {
-  var uid = firebase.auth().currentUser.uid;
-  var petKey = firebase.database().ref().child('petPlaces/' + uid + '/').push().key;
-  firebase.database().ref('petPlaces/' + uid + '/pets/' + petKey).set({
-    name,
-  });
-  firebase.database().ref('petList/' + petKey).set({
+export function addHost(name, type, location, image, description) {
+  var uid = getUid();
+  var hostKey = firebase.database().ref()
+                        .child('hostList/')
+                        .push().key;
+  var hostData = {
+    name: name,
+    type: type,
+    location: location,
+    image: image,
+    description: description
+  };
+  var updates = {};
+  updates['/hostList/' + hostKey] = hostData;
+  updates['/users/' + uid + '/hostKey'] = hostKey;
+  firebase.database().ref().update(updates);
+}
+
+export function addPet(
+  name, type, location, image, description, age, gender, size,
+  care, energy, training
+) {
+  var hostKey = getHostKey();
+  var petKey = firebase.database().ref()
+                       .child('hostList/' + hostKey + '/')
+                       .push().key;
+  var petData = {
     name: name,
     type: type,
     location: location,
@@ -63,72 +129,60 @@ export function addPetProfile(name, type, location, image, description, age, gen
     energy: energy,
     care: care,
     training: training,
-    place: uid,
-  });
-}
-
-export function addPost(petKey, post) {
-  var uid = firebase.auth().currentUser.uid;
-  firebase.database().ref('petPlaces/' + uid + '/pets')
-          .on('value', (snapshot) => {
-            snapshot.forEach((childSnapshot) => {
-              if (childSnapshot.val().name == petKey) {
-                petKey = childSnapshot.val().petKey;
-              }
-            });
-            console.log(petKey);
-            firebase.database().ref('petPlaces/' + uid + '/posts/').push({
-              post,
-              petKey,
-            });
-          });
+    host: hostKey,
+  };
+  var updates = {};
+  updates['/petList/' + petKey] = petData;
+  updates['/hostList/' + hostKey + '/pets/' + petKey] = name;
+  firebase.database().ref().update(updates);
 }
 
 export function addPhoto(petKey, image) {
-  var photoKey = firebase.database().ref().child('petPlaces/' + uid + '/').push().key;
-  var uid = firebase.auth().currentUser.uid;
+  var hostKey = getHostKey();
+  var photoKey = firebase.database().ref()
+                         .child('hostList/' + hostKey + '/')
+                         .push().key;
+  var photoData = {
+    hostKey: hostKey,
+    image: image,
+    petKey: petKey
+  };
   firebase.database()
-          .ref('petPlaces/' + uid + '/pets')
+          .ref('hostList/' + hostKey + '/pets')
           .on('value', (snapshot) => {
             snapshot.forEach((childSnapshot) => {
               if (childSnapshot.name == petKey) {
-                petKey = childSnapshot.petKey;
+                photoData.petKey = childSnapshot.petKey;
               }
             });
-            firebase.database()
-                    .ref('petPlaces/' + uid + '/photos/' + photoKey)
-                    .set({
-                      petKey,
-                    });
-            firebase.database()
-                    .ref('photos/' + photoKey + '/')
-                    .set({
-                      uid,
-                      image,
-                      petKey,
-                    });
+            var updates = {};
+            updates['/photoList/' + photoKey] = photoData;
+            updates['/hostList/' + hostKey + '/photos/' + photoKey] = petKey;
+            firebase.database().ref().update(updates);
           });
 }
 
 export function followPet(petKey, name) {
-  var uid = firebase.auth().currentUser.uid;
-  firebase.database().ref('users/' + uid + '/followedPets/' + petKey + '/').set({name: name});
+  var uid = getUid();
+  var updates = {};
+  updates['/users/' + uid + '/followedPets/' + petKey] = name;
+  firebase.database().ref().update(updates);
 }
 
-export function adoptPet(petKey, name, placeKey) {
-  var uid = firebase.auth().currentUser.uid;
-  firebase.database().ref('petPlaces/' + uid + '/pets/' + petKey).set({
-    name: name
-  });
-  firebase.database().ref('petList/' + petKey).update({
-    place: uid
-  });
-  firebase.database().ref('petPlaces/' + placeKey + '/pets/' + petKey + '/').remove();
+export function adoptPet(petKey, name, hostKey) {
+  var newHostKey = getHostKey();
+  var updates = {};
+  updates['/hostList/' + newHostKey + '/pets/' + petKey] = name;
+  updates['/petList/' + petKey + '/host'] = hostKey;
+  firebase.database().ref().update(updates);
+  firebase.database().ref('hostList/' + hostKey + '/pets/' + petKey + '/').remove();
 }
 
-export function subscribePlace(placeKey, name) {
-  var uid = firebase.auth().currentUser.uid;
-  firebase.database().ref('users/' + uid + '/followedPlaces/' + placeKey + '/').set({name: name});
+export function subscribeHost(hostKey, name) {
+  var uid = getUid;
+  var updates = {};
+  updates['/users/' + uid + '/followedHosts/' + hostKey] = name;
+  firebase.database().ref().update(updates);
 }
 
 //Storage
