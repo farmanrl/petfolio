@@ -40,10 +40,13 @@ export default class AddPetForm extends React.Component {
     this.handleClose = this.handleClose.bind(this);
   }
   handleNameChange(event) {
+    console.log('event.target.value',event.target.value);
     this.setState({nameValue: event.target.value});
+    console.log('state.namevalue',this.state.nameValue);
   }
   handleLocationChange(event) {
     this.setState({locationValue: event.target.value});
+    console.log(this.state.locationValue);
   }
   handleImageChange(event) {
     this.setState({imageValue: event.target.value});
@@ -79,19 +82,20 @@ export default class AddPetForm extends React.Component {
     this.setState({open: false});
   }
   handleSubmit() {
+    console.log(this.state);
     this.setState({open: false});
     addPet(
-      this.nameValue,
-      this.typeValue,
-      this.locationValue,
-      this.imageValue,
-      this.descriptionValue,
-      this.ageValue,
-      this.genderValue,
-      this.sizeValue,
-      this.careValue,
-      this.energyValue,
-      this.trainingValue
+      this.state.nameValue,
+      this.state.typeValue,
+      this.state.locationValue,
+      this.state.imageValue,
+      this.state.descriptionValue,
+      this.state.ageValue,
+      this.state.genderValue,
+      this.state.sizeValue,
+      this.state.careValue,
+      this.state.energyValue,
+      this.state.trainingValue
     );
   }
   render() {
@@ -118,27 +122,27 @@ export default class AddPetForm extends React.Component {
             <div style={{padding: "16 16 16 16", width: 320}}>
               <TextField
                 hintText="Name"
-                value={this.state.nameValue}
+                defaultValue={this.state.nameValue}
                 onChange={this.handleNameChange}
             /><br />
             <TextField
                 hintText="Type"
-                value={this.state.typeValue}
+                defaultValue={this.state.typeValue}
                 onChange={this.handleTypeChange}
             /><br />
             <TextField
                 hintText="Location"
-                value={this.state.locationValue}
+                defaultValue={this.state.locationValue}
                 onChange={this.handleLocationChange}
             /><br />
             <TextField
                 hintText="Photo"
-                value={this.state.imageValue}
+                defaultValue={this.state.imageValue}
                 onChange={this.handleImageChange}
             /><br />
             <TextField
                 hintText="Description"
-                value={this.state.descriptionValue}
+                defaultValue={this.state.descriptionValue}
                 onChange={this.handleDescriptionChange}
                 multiLine={true}
                 rows={1}

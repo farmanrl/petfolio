@@ -19,9 +19,14 @@ export default class HostHeader extends React.Component {
     this.handleContact = this.handleContact.bind(this);
   }
   componentWillMount() {
-    var photoList = getPhotoList();
-    var petList = getPetList();
-    this.setState({photoList: photoList, petList: petList});
+    firebase.database().ref('photoList/')
+            .on('value', (snapshot) => {
+              this.setState({photoList: snapshot.val()});
+            });
+    firebase.database().ref('petList/')
+            .on('value', (snapshot) => {
+              this.setState({petList: snapshot.val()});
+            });
   }
 
   handleExpandChange(expanded) {

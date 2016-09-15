@@ -8,6 +8,7 @@ export function authorizeUser() {
   firebase.auth()
           .signInWithPopup(provider);
   var uid = getUid();
+
   firebase.database().ref('users/' + uid + '/')
           .set({email: firebase.auth().currentUser.email});
 }
@@ -27,7 +28,6 @@ export function getUid() {
 
 export function getHostKey() {
   var uid = getUid();
-  console.log(uid);
   firebase.database()
           .ref('users/' + uid + '/hostKey')
           .once('value')
@@ -92,10 +92,7 @@ export function getHostPetKeys() {
 }
 
 export function addHost(name, type, location, image, description) {
-  var uid = getUid();
-  var hostKey = firebase.database().ref()
-                        .child('hostList/')
-                        .push().key;
+  var hostKey = getUid();
   var hostData = {
     name: name,
     type: type,
@@ -105,7 +102,7 @@ export function addHost(name, type, location, image, description) {
   };
   var updates = {};
   updates['/hostList/' + hostKey] = hostData;
-  updates['/users/' + uid + '/hostKey'] = hostKey;
+  updates['/users/'] = hostKey;
   firebase.database().ref().update(updates);
 }
 
@@ -113,10 +110,11 @@ export function addPet(
   name, type, location, image, description, age, gender, size,
   care, energy, training
 ) {
-  var hostKey = getHostKey();
+  var hostKey = getUid();
   var petKey = firebase.database().ref()
                        .child('hostList/' + hostKey + '/')
                        .push().key;
+  console.log(hostKey, petKey);
   var petData = {
     name: name,
     type: type,
@@ -131,6 +129,7 @@ export function addPet(
     training: training,
     host: hostKey,
   };
+  console.log('petData', petData);
   var updates = {};
   updates['/petList/' + petKey] = petData;
   updates['/hostList/' + hostKey + '/pets/' + petKey] = name;

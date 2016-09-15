@@ -1,4 +1,5 @@
 import React from 'react';
+import firebase from 'firebase';
 import {getHostPetKeys, addPhoto} from '../firebase';
 import AutoComplete from 'material-ui/AutoComplete';
 import TextField from 'material-ui/TextField';
@@ -7,9 +8,17 @@ import Dialog from 'material-ui/Dialog';
 
 export default class AddPhotoForm extends React.Component {
   componentWillMount() {
-    var petKeys = getHostPetKeys();
-    console.log(petKeys);
-    this.setState({petKeys: petKeys});
+    var hostKey = firebase.auth().currentUser.uid;
+    firebase.database().ref('/hostList/' + hostKey + '/pets/').on(
+      'value',
+      (snapshot) => {
+        var petKeys = {};
+        snapshot.forEach((childSnapshot) => {
+          petKeys[childSnapshot.val()] = childSnapshot.key;
+        });
+        this.setState({petKeys: petKeys});
+      }
+    );
   }
   constructor(props) {
     super(props);
@@ -41,6 +50,7 @@ export default class AddPhotoForm extends React.Component {
   }
 
   render() {
+    console.log(this.state.petKeys);
     return (
       <div>
         <Dialog

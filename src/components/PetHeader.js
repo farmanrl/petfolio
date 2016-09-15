@@ -1,4 +1,5 @@
 import React from 'react';
+import firebase from 'firebase';
 import {getHostList, getPetPhotos, followPet, adoptPet} from '../firebase';
 import {Card, CardActions, CardHeader, CardTitle, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
@@ -17,9 +18,22 @@ export default class PetHeader extends React.Component {
   }
 
   componentWillMount() {
-    var hostList = getHostList();
-    var photos = getPetPhotos(this.props.petKey);
-    this.setState({hostList: hostList, photos: photos});
+    firebase.database().ref('hostList/')
+            .on('value', (snapshot) => {
+              this.setState({hostList: snapshot.val()});
+            });
+    firebase.database().ref('photoList').on(
+      'value',
+      (snapshot) => {
+        var photos = [];
+        snapshot.forEach((childSnapshot) => {
+          if (childSnapshot.val().petKey === this.props.petKey) {
+            photos.push(childSnapshot.val().image);
+          }
+        });
+        this.setState({photos: photos});
+      }
+    );
   }
 
   handleExpandChange(expanded) {

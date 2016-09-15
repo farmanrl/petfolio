@@ -1,4 +1,5 @@
 import React from 'react';
+import firebase from 'firebase';
 import {getPetList, getHostList} from '../firebase';
 import PetHeader from './PetHeader';
 
@@ -8,9 +9,14 @@ export default class PetList extends React.Component {
     this.state = {petList: null, hostList: null};
   }
   componentWillMount() {
-    var petList = getPetList();
-    var hostList = getHostList();
-    this.setState({petList: petList, hostList: hostList});
+    firebase.database().ref('petList/')
+            .on('value', (snapshot) => {
+              this.setState({petList: snapshot.val()});
+            });
+    firebase.database().ref('hostList/')
+            .on('value', (snapshot) => {
+              this.setState({hostList: snapshot.val()});
+            });
   }
   render() {
     if (this.state.petList !== null && this.state.hostList !== null) {
@@ -28,8 +34,8 @@ export default class PetList extends React.Component {
                  name={this.state.petList[pet].name}
                  location={this.state.petList[pet].location}
                  image={this.state.petList[pet].image}
-                 host={this.state.hostList[this.state.petList[pet].place].name}
-                 hostKey={this.state.petList[pet].place}
+                 host={this.state.hostList[this.state.petList[pet].host].name}
+                 hostKey={this.state.petList[pet].host}
              />
            ))}
         </div>

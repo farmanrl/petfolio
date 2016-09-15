@@ -1,4 +1,5 @@
 import React from 'react';
+import firebase from 'firebase';
 import {getHostList} from '../firebase';
 import HostHeader from './HostHeader';
 
@@ -8,11 +9,15 @@ export default class HostList extends React.Component {
     this.state = {hostList: null};
   }
   componentWillMount() {
-    var hostList = getHostList();
-    this.setState({hostList: hostList});
+    firebase.database().ref('hostList/')
+            .on('value', (snapshot) => {
+              var hostList = snapshot.val();
+              this.setState({hostList: hostList});
+            });
   }
   render() {
     if (this.state.hostList !== null) {
+      console.log('hostlist',this.state.hostList);
       return (
         <div>
           <div style={{paddingLeft: "5%", paddingBottom: 8}}>
@@ -22,7 +27,7 @@ export default class HostList extends React.Component {
           {Object.keys(this.state.hostList).map((host, index) => (
              <HostHeader
                  key={index}
-                 placeKey={host}
+                 hostKey={host}
                  name={this.state.hostList[host].name}
                  location={this.state.hostList[host].location}
                  image={this.state.hostList[host].image}
