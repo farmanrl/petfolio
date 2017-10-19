@@ -86,7 +86,7 @@ export default class AddHostForm extends React.Component {
                     value={'Public'}
                     label="Public"
                     primaryText="This pet is a public account" />
-              </SelectField>
+              </SelectField><br />
               <TextField
                   hintText="Name"
                   value={this.state.nameValue}

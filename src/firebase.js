@@ -4,7 +4,7 @@ import firebase from 'firebase';
 
 export function authorizeUser() {
   var provider = new firebase.auth.GoogleAuthProvider();
-  provider.addScope('https://www.googleapis.com/auth/userinfo.email');
+  provider.addScope('https://www.googleapis.com/auth/userinfo.profile');
   firebase.auth()
           .signInWithPopup(provider);
   var uid = getUid();
@@ -54,7 +54,7 @@ export function getPetList() {
 }
 
 export function getPhotoList() {
-  var petList = firebase.database().ref('photoList/')
+  firebase.database().ref('photoList/')
                         .on('value', (snapshot) => {
                           return snapshot.val();
                         });
@@ -137,7 +137,7 @@ export function addPet(
 }
 
 export function addPhoto(petKey, image) {
-  var hostKey = getHostKey();
+  var hostKey = getUid();
   var photoKey = firebase.database().ref()
                          .child('hostList/' + hostKey + '/')
                          .push().key;

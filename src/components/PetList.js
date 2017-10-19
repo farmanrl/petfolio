@@ -32,8 +32,16 @@ export default class PetList extends React.Component {
                  key={index}
                  petKey={pet}
                  name={this.state.petList[pet].name}
-                 location={this.state.petList[pet].location}
                  image={this.state.petList[pet].image}
+                 location={this.state.petList[pet].location}
+                 gender={this.state.petList[pet].gender}
+                 description={this.state.petList[pet].description}
+                 energy={this.state.petList[pet].energy}
+                 size={this.state.petList[pet].size}
+                 training={this.state.petList[pet].training}
+                 type={this.state.petList[pet].type}
+                 age={this.state.petList[pet].age}
+                 care={this.state.petList[pet].care}
                  host={this.state.hostList[this.state.petList[pet].host].name}
                  hostKey={this.state.petList[pet].host}
              />

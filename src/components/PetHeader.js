@@ -1,7 +1,7 @@
 import React from 'react';
 import firebase from 'firebase';
 import {getHostList, getPetPhotos, followPet, adoptPet} from '../firebase';
-import {Card, CardActions, CardHeader, CardTitle, CardText} from 'material-ui/Card';
+import {Card, CardMedia, CardActions, CardHeader, CardTitle, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import PhotoSubheader from './PhotoSubheader';
 
@@ -22,7 +22,7 @@ export default class PetHeader extends React.Component {
             .on('value', (snapshot) => {
               this.setState({hostList: snapshot.val()});
             });
-    firebase.database().ref('photoList').on(
+    firebase.database().ref('photoList/').on(
       'value',
       (snapshot) => {
         var photos = [];
@@ -60,10 +60,10 @@ export default class PetHeader extends React.Component {
             expanded={this.state.expanded}
             onExpandChange={this.handleExpandChange}>
           <CardHeader
-              title={<h1>{this.props.name}</h1>}
+              title={<h1>{this.props.name} - ({this.props.type})</h1>}
               titleStyle={{paddingLeft: 48}}
               subtitle={<div><h3>Located at {this.props.location}</h3>
-                             <h3>Available for Adoption!</h3>
+                             <h3>{this.props.description}</h3>
                              <h3>Hosted by {this.props.host}</h3></div>}
               subtitleStyle={{paddingLeft: 48}}
               avatar={<img style={{height: 196,
@@ -76,8 +76,37 @@ export default class PetHeader extends React.Component {
               actAsExpander={true}
               showExpandableButton={true}
           />
+          <CardMedia expandable={true}>
+            <div style={{display: 'flex', justifyContent: 'space-around'}}>
+              <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center',}}>
+                <h3>Gender</h3>
+                <h4>{this.props.gender}</h4>
+              </div>
+              <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center',}}>
+                <h3>Age</h3>
+                <h4>{this.props.age}</h4>
+              </div>
+              <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center',}}>
+                <h3>Size</h3>
+                <h4>{this.props.size}</h4>
+              </div>
+              <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center',}}>
+                <h3>Energy</h3>
+                <h4>{this.props.energy}</h4>
+              </div>
+              <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center',}}>
+                <h3>Care</h3>
+                <h4>{this.props.care}</h4>
+              </div>
+              <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center',}}>
+                <h3>Training</h3>
+                <h4>{this.props.training}</h4>
+              </div>
+
+            </div>
+          </CardMedia>
           <CardTitle title="Photos" expandable={true}/>
-          <CardText expandable={true}>
+          <CardMedia expandable={true}>
             <div>
               {this.state.photos &&
                (this.state.photos)
@@ -87,7 +116,7 @@ export default class PetHeader extends React.Component {
                        photo={this.state.photos[photo]} />
                  ))}
             </div>
-          </CardText>
+          </CardMedia>
           <CardActions>
             <FlatButton
                 primary={true}
@@ -110,6 +139,14 @@ PetHeader.propTypes = {
   name: React.PropTypes.string,
   location: React.PropTypes.string,
   image: React.PropTypes.string,
+  description: React.PropTypes.string,
+  gender: React.PropTypes.string,
+  age: React.PropTypes.string,
+  size: React.PropTypes.string,
+  energy: React.PropTypes.string,
+  care: React.PropTypes.string,
+  training: React.PropTypes.string,
+  type: React.PropTypes.string,
   host: React.PropTypes.string,
   hostKey: React.PropTypes.string,
 };
